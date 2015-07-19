@@ -6,7 +6,6 @@
 Windows 7 (64-bit), R version 3.1.3, RStudio version 0.98.1103  
   
 PLEASE NOTE:    
-- toc: changed to "no" as I do not want automatically generated table of contents.  
 - I do not round up the figures in the calculations.  
 - Enlgish is not my first language, so my appologies for any bad English.
 
