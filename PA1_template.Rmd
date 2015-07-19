@@ -30,7 +30,7 @@ So every code chuck is set as `{r, echo = TRUE}`
 We will be working from a directory called "data" in our workign directory.  
 So first we check if a directory "data" exists and if directory does not exist, then we create a directory "data" in our working directory
 
-```{r, echo = TRUE}
+```{r 1, echo = TRUE}
 if (!file.exists("data")) { 
     dir.create("data")    }
 ```
@@ -52,7 +52,7 @@ Than we can use the code below to unzip the data:
 
 ### Reading data
 we use `read.csv()` to read into dataset "A1" from "data" specifying the header as valid
-```{r, echo = TRUE}
+```{r 2, echo = TRUE}
 A1 <- read.csv("./data/activity.csv", header = TRUE)
 ```
 
@@ -65,7 +65,7 @@ steps | date | interval
 Number of steps taking in a 5-minute interval (missing values are coded as NA) | The date on which the measurement was taken in YYYY-MM-DD format | Identifier for the 5-minute interval in which measurement was taken
 
 To display the structure of our loaded data "A1" we run:
-```{r, echo = TRUE}
+```{r 3, echo = TRUE}
 str(A1)
 ```
 
@@ -84,17 +84,17 @@ str(A1)
 ### 1. Calculate the total number of steps taken per day
 
 Using  dplyr package
-```{r, echo = TRUE, message = FALSE, warning = FALSE}
+```{r 4, echo = TRUE, message = FALSE, warning = FALSE}
 library(dplyr)
 ```
 
 we need to create a new dataset "A2" with sum of steps per day (ignoring N/A values i.e. not addressing them at all here)
-```{r, echo = TRUE}
+```{r 5, echo = TRUE}
 A2 <- summarise(group_by(A1, date), StepsPerDay = sum(steps))
 ```
 
 The result is a table
-```{r, echo = TRUE}
+```{r 6, echo = TRUE}
 head(A2)
 ```
 
@@ -118,7 +118,7 @@ So:
 ### 2.(2) Make a histogram of the total number of steps taken each day
 
 Using `hist()` we plot the total number of steps taken each day (from our dataset "A2")
-```{r, echo = TRUE}
+```{r 7, echo = TRUE}
 hist(A2$StepsPerDay, 
      breaks = 30,
      main = "Total number of steps taken each day",
@@ -131,12 +131,12 @@ Here we cannot ignore N/A values (as the result would be N/A), so need to omit t
   
   
 The mean of total steps per day is:
-```{r echo = TRUE}
+```{r 8, echo = TRUE}
 mean(A2$StepsPerDay, na.rm = TRUE)
 ```
 
 The median of total steps per day is:  
-```{r, echo = TRUE}
+```{r 9, echo = TRUE}
 median(A2$StepsPerDay, na.rm = TRUE)
 ```
 
@@ -151,13 +151,13 @@ median(A2$StepsPerDay, na.rm = TRUE)
 
 We need to create a new dataset "A3" with an average of steps per 5-minute interval
 
-```{r, echo = TRUE}
+```{r 10, echo = TRUE}
 A3 <- summarise(group_by(A1, interval), AvgSteps = mean(steps, na.rm = TRUE))
 ```
 
 and do a line plot  ```type = "l"```
 
-```{r, echo = TRUE}
+```{r 11, echo = TRUE}
 plot(A3$interval, A3$AvgSteps, 
      main = "Daily activity pattern",
      xlab = "5-minute interval",
@@ -171,17 +171,17 @@ plot(A3$interval, A3$AvgSteps,
 
 
 We need to sort descending the average of steps per 5-minute interval (from our previous calculation in dataset "A3") in new dataset "A4".
-```{r, echo = TRUE}
+```{r 12, echo = TRUE}
 A4 <- arrange(A3, desc(AvgSteps))
 ```
 
 and the answer is in the first row of dataset "A4"
-```{r, echo = TRUE}
+```{r 13, echo = TRUE}
 head(A4, n = 1)
 ```
 
 or if we want to show the answer on a plot
-``` {r, echo= TRUE}
+``` {r 14, echo= TRUE}
 barplot(A4$AvgSteps, 
         main = "Which 5-min. interval contains the max. no. of steps?",
         xlab = "5-minute interval",
@@ -191,7 +191,7 @@ barplot(A4$AvgSteps,
 ```
 
 or we can reduce the number of results from "A4" dataset for readability, so we create new dataset "A5" with only 10 rows from dataset "A4")
-```{r, echo = TRUE}
+```{r 15, echo = TRUE}
 A5 <- head(A4, n = 10)
 barplot(A5$AvgSteps, 
         main = "Which 5-min. interval contains the max. no. of steps?",
@@ -214,12 +214,12 @@ barplot(A5$AvgSteps,
 #### 1. Calculate and report the total number of missing values in the dataset (i.e. the total number of rows with NAs)
 
 We can count NAs from our dataset "A1", so the total number of missing values in the dataset is:
-```{r, echo = TRUE}
+```{r 16, echo = TRUE}
 sum(length(which(is.na(A1$steps))))
 ```
 
 Just to make sure that we did not misunderstand "days/intervals" we check if there are any N/As in "date" and "interval"
-```{r, echo = TRUE}
+```{r 17, echo = TRUE}
 sum(length(which(is.na(A1$date))))
 sum(length(which(is.na(A1$interval))))
 ```
@@ -232,12 +232,12 @@ We will fill N/A with an average for each 5-minute interval (we will create an i
 
 First we create a new dataset "A6" for "steps" from original dataset "A1"
 
-```{r, echo = TRUE}
+```{r 18, echo = TRUE}
 A6 <- data.frame(A1$steps)
 ```
 then we populate our "A6" dataset with the average for each 5-minute interval, using `tapply` and `mean` function
 
-```{r, echo = TRUE}
+```{r 19, echo = TRUE}
 A6[is.na(A6),] <- tapply(X=A1$steps, INDEX=A1$interval, FUN=mean, na.rm = TRUE)
 ```
 
@@ -246,17 +246,17 @@ A6[is.na(A6),] <- tapply(X=A1$steps, INDEX=A1$interval, FUN=mean, na.rm = TRUE)
 
 so we are creating new dataset "A7" where we are combining "steps" with N/A values filled in with an average across all days by "interval", with the original dataset "A1" for columns "date" and "interval"
 
-```{r, echo = TRUE}
+```{r 20, echo = TRUE}
 A7 <- cbind(A6, A1[,2:3])
 colnames(A7) <- c("steps", "date", "interval")
 ```
 We can see the original dataset which has missing values
 
-```{r, echo = TRUE}
+```{r 21, echo = TRUE}
 head(A1)
 ```
 and our new dataset "A7" which has N/A values filled in
-```{r, echo = TRUE}
+```{r 22, echo = TRUE}
 head(A7)
 ```
 
@@ -265,13 +265,13 @@ head(A7)
 
 We need to create a new dataset "A8" (from dataset "A7") with a sum of steps per day
 
-```{r, echo = TRUE}
+```{r 23, echo = TRUE}
 A8 <- summarise(group_by(A7, date), StepsPerDay = sum(steps))
 ```
 
 Using `hist()` we can plot our total number of steps taken each day (with our N/A values filled in as per pt.3)
 
-```{r, echo = TRUE}
+```{r 24, echo = TRUE}
 hist(A8$StepsPerDay, 
      breaks = 30,
      main = "Total no. of steps taken each day - N/A filled in",
@@ -282,12 +282,12 @@ hist(A8$StepsPerDay,
 #### 4.(2) and Calculate and report the mean and median total number of steps taken per day.
 
 The mean of total steps per day with N/As filled in is:
-```{r echo = TRUE}
+```{r 25, echo = TRUE}
 mean(A8$StepsPerDay)
 ```
 
 The median of total steps per day with N/A filled in is:  
-```{r, echo = TRUE}
+```{r 26, echo = TRUE}
 median(A8$StepsPerDay)
 ```
   
@@ -297,19 +297,19 @@ median(A8$StepsPerDay)
 ### MEAN
 
 The mean  with N/A values (omitted)
-```{r, echo = TRUE}
+```{r 27, echo = TRUE}
 mean(A2$StepsPerDay, na.rm = TRUE)
 ```
 The mean  with N/A values (replaced with mean)
-``` {r, echo = TRUE}
+``` {r 28, echo = TRUE}
 mean(A8$StepsPerDay)
 ```
 The median with N/A values (omitted)
-``` {r, echo = TRUE}
+``` {r 29, echo = TRUE}
 median(A2$StepsPerDay, na.rm = TRUE)
 ```
 The median with N/A values (replaced with mean)
-``` {r, echo = TRUE}
+``` {r 30, echo = TRUE}
 median(A8$StepsPerDay)
 ```
 
@@ -325,42 +325,42 @@ so we will show it here.
 
 Again we create a new dataset, lets call it "A6v2" for "steps" from original dataset "A1"
 
-```{r, echo = TRUE}
+```{r 31, echo = TRUE}
 A6v2 <- data.frame(A1$steps)
 ```
 then we populate our "A6v2" dataset with the median across all days by "interval", using `tapply` and `median` function
 
-```{r, echo = TRUE}
+```{r 32, echo = TRUE}
 A6v2[is.na(A6v2),] <- tapply(X=A1$steps, INDEX=A1$interval, FUN=median, na.rm = TRUE)
 ```
 
 Then we are creating new dataset "A7v2" where we are combining "steps" with N/A values filled in with a median across all days by "interval", with the original dataset "A1" for columns "date" and "interval"
 
-```{r, echo = TRUE}
+```{r 33, echo = TRUE}
 A7v2 <- cbind(A6v2, A1[,2:3])
 colnames(A7v2) <- c("steps", "date", "interval")
 ```
 Then we create a dataset "A8v2" (from dataset "A7v2") with a sum of steps per day
 
-```{r, echo = TRUE}
+```{r 34, echo = TRUE}
 A8v2 <- summarise(group_by(A7v2, date), StepsPerDay = sum(steps))
 ```
 
 So if we now compare the original dataset with MEDIAN filled dataset:  
 The mean  with N/A values (omitted)
-```{r, echo = TRUE}
+```{r 35, echo = TRUE}
 mean(A2$StepsPerDay, na.rm = TRUE)
 ```
 The mean with N/A values (replaced with median)
-``` {r, echo = TRUE}
+``` {r 36, echo = TRUE}
 mean(A8v2$StepsPerDay)
 ```
 The median with N/A values (omitted)
-``` {r, echo = TRUE}
+``` {r 37, echo = TRUE}
 median(A2$StepsPerDay, na.rm = TRUE)
 ```
 The median with N/A values (replaced with median)
-``` {r, echo = TRUE}
+``` {r 38, echo = TRUE}
 median(A8v2$StepsPerDay)
 ```
 
@@ -374,7 +374,7 @@ Making sure the frequency is the same so we can see the difference.
 ### MEAN 
 
 for MEAN 
-``` {r, echo = TRUE}
+``` {r 39, echo = TRUE}
 par(mfrow =c(1, 2))
 hist(A2$StepsPerDay, 
      breaks = 30,
@@ -394,7 +394,7 @@ hist(A8$StepsPerDay,
 
 ### MEDIAN
 
-``` {r, echo = TRUE}
+``` {r 40, echo = TRUE}
 par(mfrow =c(1, 2))
 hist(A2$StepsPerDay, 
      breaks = 30,
@@ -422,28 +422,28 @@ In our case the dataset is "A7"
 #### 1. Create a new factor variable in the dataset with two levels: "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
 So we create a new dataset "A9" from our dataset "A7" 
-``` {r, echo = TRUE}
+``` {r 41, echo = TRUE}
 A9 <- A7
 ```
 
 and then we convert our "date" variable (which is a factor) to a real date. 
-``` {r, echo = TRUE}
+``` {r 42, echo = TRUE}
 A9$date <- strptime(A9$date, format = "%Y-%m-%d")
 ```
 checking we have a real date instead factor in our "date" variable
-``` {r, echo = TRUE}
+``` {r 43, echo = TRUE}
 str(A9$date)
 ```
 
 Now we add a new variable called "day" to our dataset "A9" and show in it which date is a weekday and which is weekend
 
-``` {r echo = TRUE}
+``` {r 44, echo = TRUE}
 A9[,"day"]  <- as.factor(ifelse(weekdays(A9$date) %in% 
         c("Saturday","Sunday"),"weekend", "weekday"))
 ```
 
 Preview our data
-``` {r echo = TRUE}
+``` {r 45, echo = TRUE}
 head(A9, n= 10)
 ```
 
@@ -453,7 +453,7 @@ head(A9, n= 10)
 
 So we create a new dataset "A10" with mean for "weekday" and "weekend" from dataset "A9".  
 (as dplyr does not handle POSIXlt well in knitr we will use `aggregate()` function)
-```{r, echo = TRUE}
+```{r 46, echo = TRUE}
 A10 <- aggregate(data=A9, steps ~ day + interval, FUN=mean)
 ```
 
@@ -461,7 +461,7 @@ A10 <- aggregate(data=A9, steps ~ day + interval, FUN=mean)
 
 Than we make a panel plot (type = "l") of the 5-minute interval and the average number of steps taken, averaged across all weekday days or weekend days.
 
-```{r, echo = TRUE}
+```{r 47, echo = TRUE}
 library("lattice")
 
 xyplot(
@@ -482,34 +482,34 @@ xyplot(
 ### MEDIAN STRATEGY FOR FILLING IN N/As
 
 Again we create a new dataset "A9v2" from our dataset "A7v2" 
-``` {r, echo = TRUE}
+``` {r 48, echo = TRUE}
 A9v2 <- A7v2
 ```
 
 and then we convert our "date" variable (which is a factor) to a real date. 
-``` {r, echo = TRUE}
+``` {r 49, echo = TRUE}
 A9v2$date <- strptime(A9v2$date, format = "%Y-%m-%d")
 ```
 checking we have a real date instead factor in our "date" variable
-``` {r, echo = TRUE}
+``` {r 50, echo = TRUE}
 str(A9v2$date)
 ```
 
 Now we add a new variable called "day" to our dataset "A9" and show in it which date is a weekday and which is weekend
 
-``` {r echo = TRUE}
+``` {r 51, echo = TRUE}
 A9v2[,"day"]  <- as.factor(ifelse(weekdays(A9v2$date) %in% 
         c("Saturday","Sunday"),"weekend", "weekday"))
 ```
 
 Finally we create a new dataset "A10v2" with mean for "weekday" and "weekend" from dataset "A9v2".  
-```{r, echo = TRUE}
+```{r 52, echo = TRUE}
 A10v2 <- aggregate(data=A9v2, steps ~ day + interval, FUN=mean)
 ```
 
 and plot
 
-```{r, echo = TRUE}
+```{r 53, echo = TRUE}
 xyplot(
     type = "l",
     col = 109,
